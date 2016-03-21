@@ -1,5 +1,5 @@
 # my-projects
-Here are some of the cool projects I've worked on so far! Since I made a couple projects through my Data Structures course, I am unable to upload those projects here, but I would be more than glad to show you them in person or email them to you!
+Here are some of the cool projects I've worked on so far! Since I made a projects through my courses, I am unable to upload those projects here, but I would be more than glad to discuss or show you them in person!
 
 Text Editor Project
 - Designed and built a text editor with features such as word wrap, arrow keys, mouse clicking, and undo/redo. Effectively implemented such features within runtime constraints by designing a custom linked list based data structure.
