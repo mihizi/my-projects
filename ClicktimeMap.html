@@ -4,12 +4,9 @@
     <meta charset="utf-8">
     <title>Directions service</title>
     <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
       #map {
         height: 100%;
       }
-      /* Optional: Makes the sample page fill the window. */
       html, body {
         height: 100%;
         margin: 0;
@@ -49,7 +46,6 @@
 
       var coffeeShop = null;
       var donutShop = null;
-      // var userLocation = null;
 
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -115,9 +111,7 @@
             var directionsService = new google.maps.DirectionsService;
             var directionsDisplay = new google.maps.DirectionsRenderer;
             calculateAndDisplayRoute(directionsService, directionsDisplay, currentPlace, coffeeShop, donutShop);
-
           });
-
         }
 
         function error() {
@@ -141,10 +135,8 @@
         var selectedMode = document.getElementById('mode').value;
         var todoList = document.getElementById("todo-list");
 
-
         var ending = "282 2nd Street 4th floor, San Francisco, CA 94105";
         var destinations = [currentPlace, coffeeShop.formatted_address, donutShop.formatted_address, ending];
-
 
         for (var i = 0; i < destinations.length - 1; i++) {
           directionsService.route({
