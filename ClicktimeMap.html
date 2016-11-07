@@ -1,0 +1,174 @@
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Directions service</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #floating-panel {
+        position: absolute;
+        top: 10px;
+        left: 25%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+    </style>
+  </head>
+    <ol id="todo-list">
+    </ol>
+  <body>
+    <div id="floating-panel">
+    <b>How would you like to get to Clicktime today?: </b>
+    <select id="mode">
+      <option value="WALKING">Walking</option>
+      <option value="BICYCLING">Bicycling</option>
+      <option value="TRANSIT">Transit</option>
+    </select>
+    </div>
+    <div id="map"></div>
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBq8b36fGIo_xUDMM9zWiu2XaGUv1-YWc&callback=initMap&libraries=places">
+    </script>    
+    <script>
+
+      var coffeeShop = null;
+      var donutShop = null;
+      // var userLocation = null;
+
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 5,
+          center: {lat: 36, lng: -120}
+        });
+
+        //Coordinates for 282 2nd Street 4th floor, San Francisco, CA 94105
+        var clickTime = new google.maps.LatLng(37.785636,-122.397119);
+        var geocoder = new google.maps.Geocoder;
+
+        var control = document.getElementById('floating-panel');
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
+
+ 			  var requestCoffeeandBakery = {
+ 			  	location: clickTime,
+ 			 		radius: '1610',
+ 			  	types: ['cafe', 'bakery']
+ 			  };
+        
+        //Search for Coffee and Donuts close to Clicktime SF office (because we don't want them to get cold before they reach!)
+  			service = new google.maps.places.PlacesService(map);
+  			service.textSearch(requestCoffeeandBakery, chooseClosest);
+        
+      }
+
+
+      //Chooses the the desired stores to buy Coffee and Donuts on the way to Clicktime.
+      //Also, calls the function to find the location of the current user.
+			function chooseClosest(results, status) {
+			 if (status == google.maps.places.PlacesServiceStatus.OK) {
+          var geocoder = new google.maps.Geocoder;
+			   for (var i = 0; i < results.length; i++) {
+			     var place = results[i];
+			     if (place.types.includes('cafe') && place.types.includes('bakery')) {
+            coffeeShop = place;
+            donutShop = place;
+            return findUser(geocoder, coffeeShop, donutShop);
+           } else if (place.types.includes('cafe')) {
+            coffeeShop = place;
+           } else if (place.types.includes('bakery')) {
+            donutShop = place;
+           }
+          if (coffeeShop !== null && donutShop !== null) {
+            console.log(coffeeShop);
+            console.log(donutShop);
+            return findUser(geocoder, coffeeShop, donutShop);
+          }
+			   }
+			 }
+			}
+
+      //Finds the geolocation of the current user. Then, finally calls function to calculate the directions.
+      function findUser(geocoder,coffeeShop,donutShop) {
+        function success(position) {
+          var latitude  = position.coords.latitude;
+          var longitude = position.coords.longitude;
+          var latlng = {lat: parseFloat(latitude), lng: parseFloat(longitude)};
+          geocoder.geocode({'location': latlng}, function(results, status) {
+            if (status === 'OK') {
+              var currentPlace = results[0].formatted_address;
+            }
+            var directionsService = new google.maps.DirectionsService;
+            var directionsDisplay = new google.maps.DirectionsRenderer;
+            calculateAndDisplayRoute(directionsService, directionsDisplay, currentPlace, coffeeShop, donutShop);
+
+          });
+
+        }
+
+        function error() {
+          console.log("Unable to retrieve your location");
+        }
+
+        navigator.geolocation.getCurrentPosition(success, error);
+      }
+ 
+      //Helper function used to remove HTML pieces from direction orders
+      //Found Here: http://stackoverflow.com/questions/822452/strip-html-from-text-javascript
+      function strip(html) {
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || "";
+      }
+
+
+      //Caclulate and output route between current location, the Coffee shop, Bakery (Donut Shop), and Clicktime SF office
+      function calculateAndDisplayRoute(directionsService, directionsDisplay, currentPlace, coffeeShop, donutShop) {
+        var selectedMode = document.getElementById('mode').value;
+        var todoList = document.getElementById("todo-list");
+
+
+        var ending = "282 2nd Street 4th floor, San Francisco, CA 94105";
+        var destinations = [currentPlace, coffeeShop.formatted_address, donutShop.formatted_address, ending];
+
+
+        for (var i = 0; i < destinations.length - 1; i++) {
+          directionsService.route({
+            origin: destinations[i],
+            destination: destinations[i + 1],
+            travelMode: selectedMode
+          }, function(response, status) {
+            if (status === 'OK') {
+              directionsDisplay.setDirections(response);
+              var steps = response.routes[0].legs[0].steps;
+              //bullet points
+              for (var i = 0; i < steps.length; i++) {
+                var todoItem = document.createElement("li");
+                var placeName = strip(steps[i].instructions);
+                todoItem.appendChild(document.createTextNode(placeName));
+                todoList.appendChild(todoItem);
+              }
+            } else {
+              window.alert('Directions request failed due to ' + status);
+            }
+          });
+        };
+
+      }
+    </script>
+  </body>
+</html>
