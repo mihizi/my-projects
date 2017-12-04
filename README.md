@@ -1,5 +1,14 @@
 # my-projects
-Here are some of the cool projects I've worked on so far! Since I made a projects through my courses, I am unable to upload those projects here, but I would be more than glad to discuss or show you them in person!
+Here are some of the cool projects I have worked on! Since I made a few projects through my courses, I am unable to upload those projects here, but I would be more than happy to discuss them or give a demo in person!
+
+WAN Optimizer
+- Built a middlebox application that optimizes the amount of data transmitted over a wide area network (WAN).
+
+Chat
+- Utilized sockets to create a simple chat server which allows users to join and leave channels.
+
+Distance-Vector Routing
+- Designed an implementation of distance-vector routing, a distributed routing algorithm where multiple routers cooperate to transport packets to their destinations efficiently. 
 
 Text Editor Project
 - Designed and built a text editor with features such as word wrap, arrow keys, mouse clicking, and undo/redo. Effectively implemented such features within runtime constraints by designing a custom linked list based data structure.
@@ -9,11 +18,3 @@ BearMaps
 
 California Water Usage
 - Utilized data procured from the California State Water Resources Control Board and the IRS to explore possible connections between water usage, geography, and income in California.
-
-Linked List Deque
-- Built a Linked List with front and back sentinels to ensure efficient runtimes
-
-ArrayList Deque
-- Built an Arraylist with circular topology that could run basic methods efficiently and resize when necessary.
-
-
